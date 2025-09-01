@@ -2,7 +2,7 @@ const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const {getUserByUsername} = require('../models/user.model.js');
+const {getUserByUsername} = require('../models/UserModel.js');
 
 const userLogin = async (req, res) => {
     const { username, password } = req.body;
