@@ -8,6 +8,7 @@ exports.up = function (knex) {
         table.string('username', 50).notNullable().unique();
         table.string('email', 100).notNullable().unique();
         table.string('password', 255).notNullable();
+        table.string('role', 255).notNullable();
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });
 };
