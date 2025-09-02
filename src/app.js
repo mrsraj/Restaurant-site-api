@@ -83,6 +83,11 @@ io.on('connection', (socket) => {
 //     }
 // });
 
+// Catch-all route for undefined paths
+app.use('', (req, res) => {
+  res.status(404).json({ message: "Path does not exist" });
+});
+
 const PORT = process.env.PORT;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
