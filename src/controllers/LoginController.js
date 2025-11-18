@@ -30,8 +30,8 @@ const userLogin = async (req, res) => {
             process.env.JWT_SECRET || 'defaultSecret',
             { expiresIn: '1h' }
         );
-
-        return res.json({ token });
+        let role = user.role;
+        return res.json({ token,role });
 
     } catch (err) {
         console.error("Login error:", err);
