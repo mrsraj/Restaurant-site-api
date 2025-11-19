@@ -8,6 +8,7 @@ const cors = require('cors');
 const mysql = require('mysql2');
 const route = express.Router();
 const authRoutes = require('./routes/AuthRoutes');
+const menuRoutes = require('./routes/menuRoutes')
 
 
 const pool = require("./config/db")
@@ -38,6 +39,7 @@ const bcrypt = require('bcrypt');
 
 app.use(express.json());
 app.use('/auth', authRoutes);
+app.use("/api", menuRoutes);
 
 
 app.get('/user', async (req, res) => {
