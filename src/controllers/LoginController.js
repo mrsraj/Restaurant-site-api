@@ -2,7 +2,7 @@ const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const {getUserByUsername} = require('../models/UserModel.js');
+const { getUserByUsername } = require('../models/UserModel.js');
 
 const userLogin = async (req, res) => {
     const { username, password } = req.body;
@@ -31,7 +31,8 @@ const userLogin = async (req, res) => {
             { expiresIn: '1h' }
         );
         let role = user.role;
-        return res.json({ token,role });
+        let user_id = results[0].id;
+        return res.json({ token, role, user_id});
 
     } catch (err) {
         console.error("Login error:", err);
