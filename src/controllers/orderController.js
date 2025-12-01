@@ -1,7 +1,7 @@
 const { createInvoice } = require("../models/InvoiceModel");
 const { createInvoiceLine } = require("../models/InvoiceLineModel");
 const { PaymentCreation } = require("../models/PaymentModel");
-const pool = require('../config/db')
+const pool = require("../config/db"); // e.g. mysql2/promise pool
 
 exports.placeOrder = async (req, res) => {
     const {
@@ -17,7 +17,7 @@ exports.placeOrder = async (req, res) => {
         return res.status(400).json({ message: "Invalid order data" });
     }
 
-   let conn;
+    let conn;
 
     try {
         // Get connection & start transaction
@@ -25,7 +25,7 @@ exports.placeOrder = async (req, res) => {
         await conn.beginTransaction();
 
         // 1. Create invoice
-        const invoice = await createInvoice(user_id, new Date(), total);
+        const invoice = await createInvoice(conn, user_id, new Date(), total);
         console.log("invoice_id = ", invoice.invoice_id);
 
         const order_id = invoice.invoice_id;
@@ -35,11 +35,12 @@ exports.placeOrder = async (req, res) => {
             const { id, finalPrice, qty } = item;
             const line_total = finalPrice * qty;
 
-            await createInvoiceLine(order_id, id, qty, finalPrice, line_total);
+            await createInvoiceLine(conn, order_id, id, qty, finalPrice, line_total);
         }
 
         // 3. Create payment
         await PaymentCreation(
+            conn,
             order_id,
             user_id,
             payment_date || new Date(),
@@ -55,9 +56,9 @@ exports.placeOrder = async (req, res) => {
             message: "Order placed successfully",
             invoice_id: order_id,
         });
-
     } catch (error) {
         console.error("placeOrder error:", error);
+
         // If any error -> ROLLBACK
         if (conn) {
             try {
@@ -66,12 +67,13 @@ exports.placeOrder = async (req, res) => {
                 console.error("Rollback error:", rollbackErr);
             }
         }
-        res.status(400).json({ message: error.message || "Order failed" });
 
+        res.status(400).json({ message: error.message || "Order failed" });
     } finally {
         if (conn) conn.release(); // release connection back to pool
     }
 };
+
 
 
 

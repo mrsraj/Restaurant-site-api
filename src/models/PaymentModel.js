@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-exports.PaymentCreation = async (invoice_id, customer_id, payment_date, amount, method, reference_number) => {
+exports.PaymentCreation = async (conn,invoice_id, customer_id, payment_date, amount, method, reference_number) => {
 
     if (!invoice_id || !customer_id || !amount || !method) {
         throw new Error("Required fields are missing");
@@ -8,7 +8,7 @@ exports.PaymentCreation = async (invoice_id, customer_id, payment_date, amount, 
 
     const paymentDate = payment_date || new Date();
 
-    const [result] = await pool.query(
+    const [result] = await conn.query(
         `INSERT INTO payment 
          (invoice_id, customer_id, payment_date, amount, method, reference_number)
          VALUES (?, ?, ?, ?, ?, ?)`,

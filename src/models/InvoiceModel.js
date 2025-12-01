@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 
-exports.createInvoice = async (customer_id, invoice_date, total_amount) => {
-  const [result] = await pool.query(
+exports.createInvoice = async (conn,customer_id, invoice_date, total_amount) => {
+  const [result] = await conn.query(
     `INSERT INTO invoice (customer_id, invoice_date, total_amount) VALUES (?, ?, ?)`,
     [customer_id, invoice_date, total_amount]
   );
