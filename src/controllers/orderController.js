@@ -1,6 +1,7 @@
 const { createInvoice } = require("../models/InvoiceModel");
 const { createInvoiceLine } = require("../models/InvoiceLineModel");
 const { PaymentCreation } = require("../models/PaymentModel");
+const sendOrderMessage = require("./WhatsappController");
 const pool = require("../config/db"); // e.g. mysql2/promise pool
 
 exports.placeOrder = async (req, res) => {
@@ -10,7 +11,8 @@ exports.placeOrder = async (req, res) => {
         total,
         method,          // e.g. 'cash', 'card', 'upi'
         reference_number, // optional
-        payment_date,     // optional
+        payment_date,
+        name     // optional
     } = req.body;
 
     if (!user_id || !cart || !Array.isArray(cart) || cart.length === 0) {
@@ -51,6 +53,8 @@ exports.placeOrder = async (req, res) => {
 
         // 4. If everything is OK -> COMMIT
         await conn.commit();
+        const message = { order_id: order_id, name: name }
+        sendOrderMessage(message);
 
         res.json({
             message: "Order placed successfully",
