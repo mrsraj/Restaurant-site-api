@@ -32,7 +32,7 @@ const userLogin = async (req, res) => {
         );
         let role = user.role;
         let user_id = results[0].id;
-        return res.json({ token, role, user_id});
+        return res.json({ token, role, user_id, username:user.username});
 
     } catch (err) {
         console.error("Login error:", err);
