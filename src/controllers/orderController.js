@@ -15,6 +15,9 @@ exports.placeOrder = async (req, res) => {
         name     // optional
     } = req.body;
 
+    console.log("Test Datat = ", req);
+    
+
     if (!user_id || !cart || !Array.isArray(cart) || cart.length === 0) {
         return res.status(400).json({ message: "Invalid order data" });
     }
@@ -59,6 +62,7 @@ exports.placeOrder = async (req, res) => {
         res.json({
             message: "Order placed successfully",
             invoice_id: order_id,
+            invoice:invoice
         });
     } catch (error) {
         console.error("placeOrder error:", error);
