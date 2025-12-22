@@ -28,7 +28,7 @@ async function AdminMenuController(req, res) {
                         username: row.username,
                         total_amount: row.total_amount,
                         order_status:row.order_status,
-                        payment_status:row.order_status,
+                        payment_status:row.payment_status,
                         invoice_id: row.invoice_id,
                         products: []
                     };

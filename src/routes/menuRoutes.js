@@ -12,6 +12,7 @@ const FileUploadController = require("../controllers/FileController")
 
 const authenticate = require('../middlewares/authMiddleware');
 const authorizeRoles = require('../middlewares/roleMiddleware');
+const statusUpdate = require("../controllers/AdminMenuStatusUpdate");
 
 //Menu URLs
 
@@ -26,5 +27,6 @@ router.delete("/menu/delete/:id", authenticate, authorizeRoles('admin'), deleteM
 router.post("/upload", FileUploadController);
 router.get('/menu/categories', GetCategory);
 router.get('/adminmenu',adminmenu);
+router.post('/admin/status',statusUpdate);
 
 module.exports = router;
