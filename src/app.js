@@ -5,14 +5,21 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const cors = require('cors');
+
 const authRoutes = require('./routes/AuthRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require("./routes/orderRoutes");
+
 const pool = require("./config/db");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+
+// 👇 THIS IS THE FIX
+app.use("/uploads",express.static(path.join(__dirname, "..", "uploads")));
 
 // ROUTES
 app.use('/auth', authRoutes);
