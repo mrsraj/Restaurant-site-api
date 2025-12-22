@@ -1,32 +1,35 @@
 const pool = require("../config/db");
 
 async function createCategoryAndMenuFlat(req, res) {
-    console.log("Menu body = ", req.body);
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
 
     try {
         const {
             c_name,
-            description,
-            image_url,
-            category_is_active,
-
             name,
             descriptions,
-            image_urls,
             price,
             discount,
             is_active,
         } = req.body;
 
-        // ---- CATEGORY VALIDATION ----
+        // Multer file (menu image)
+        const imagePath = req.file ? req.file.filename : null;
+
+        /* ======================
+           CATEGORY VALIDATION
+        ====================== */
         if (!c_name) {
             return res.status(400).json({
                 success: false,
-                message: "Category name (c_name) is required",
+                message: "Category name is required",
             });
         }
 
-        // ---- 1) Check if category already exists ----
+        /* ======================
+           CHECK / CREATE CATEGORY
+        ====================== */
         let categoryId;
 
         const [existingRows] = await pool.query(
@@ -37,66 +40,61 @@ async function createCategoryAndMenuFlat(req, res) {
         if (existingRows.length > 0) {
             categoryId = existingRows[0].id;
         } else {
-            const insertCategorySql = `
-                INSERT INTO categories (c_name, description, image_url, is_active)
-                VALUES (?, ?, ?, ?)
-            `;
-
-            const categoryValues = [
-                c_name,
-                description || null,
-                image_url || null,
-                typeof category_is_active === "number" ? category_is_active : 1,
-            ];
-
-            const [catResult] = await pool.query(insertCategorySql, categoryValues);
+            const [catResult] = await pool.query(
+                `INSERT INTO categories (c_name, is_active)
+                 VALUES (?, ?)`,
+                [c_name, 1]
+            );
             categoryId = catResult.insertId;
         }
 
-        // ---- MENU VALIDATION ----
+        /* ======================
+           MENU VALIDATION
+        ====================== */
         if (!name) {
             return res.status(400).json({
                 success: false,
-                message: "Menu name (name) is required",
+                message: "Menu item name is required",
             });
         }
 
-        if (!price || isNaN(Number(price))) {
+        if (!price || isNaN(price)) {
             return res.status(400).json({
                 success: false,
-                message: "Valid menu price is required",
+                message: "Valid price is required",
             });
         }
 
-        const insertMenuSql = `
-            INSERT INTO menu
+        /* ======================
+           INSERT MENU ITEM
+        ====================== */
+        const [menuResult] = await pool.query(
+            `INSERT INTO menu
                 (name, descriptions, image_urls, price, discount, category_id, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `;
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [
+                name,
+                descriptions || null,
+                imagePath,                 // ✅ multer image
+                Number(price),
+                discount ? Number(discount) : 0,
+                categoryId,
+                Number(is_active) === 0 ? 0 : 1,
+            ]
+        );
 
-        const menuValues = [
-            name,
-            descriptions || null,
-            image_urls || null,
-            Number(price),
-            discount != null ? Number(discount) : 0.0,
-            categoryId, // 👈 final category id (existing or newly created)
-            typeof is_active === "number" ? is_active : 1,
-        ];
-
-        const [menuResult] = await pool.query(insertMenuSql, menuValues);
-
-        // ---- 4) Final response ----
+        /* ======================
+           RESPONSE
+        ====================== */
         return res.status(201).json({
             success: true,
-            message: "Category and Menu created successfully",
+            message: "Menu item created successfully",
             category_id: categoryId,
             menu_id: menuResult.insertId,
         });
-        
-    } catch (error) {
-        console.error("Create Category+Menu Flat Error:", error);
 
+    } catch (error) {
+        console.error("Create Menu Error:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
