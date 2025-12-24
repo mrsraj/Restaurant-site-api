@@ -9,6 +9,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/AuthRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require("./routes/orderRoutes");
+const reservation = require('./routes/reservation.routes')
 
 const pool = require("./config/db");
 const path = require("path");
@@ -25,6 +26,7 @@ app.use("/uploads",express.static(path.join(__dirname, "..", "uploads")));
 app.use('/auth', authRoutes);
 app.use("/api", menuRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/table",reservation);
 
 // GET /user
 app.get('/user', async (req, res) => {
