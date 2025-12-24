@@ -11,6 +11,6 @@ const reservationStatus = require('../controllers/UpdateReservationStatus.js');
 
 router.post('/reservation', reservation);
 router.get('/getreserv', getReservation);
-router.post('/reserveStatus',reservationStatus);
+router.put('/reserveStatus',reservationStatus);
 
 module.exports = router;

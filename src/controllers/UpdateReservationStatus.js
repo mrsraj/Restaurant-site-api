@@ -2,7 +2,7 @@
 const pool = require('../config/db');
 
 const updateReservationStatus = async (req, res) => {
-    const { id, status, user_id } = req.body;
+    const { id, status, user_id } = req.body; 
 
     const allowedStatus = ["confirmed", "cancelled", "done"];
 
@@ -24,7 +24,7 @@ const updateReservationStatus = async (req, res) => {
             });
         }
 
-        return res,status(200).json({
+        return res.status(200).json({
             message: "Reservation status updated",
         });
 
