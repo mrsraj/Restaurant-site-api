@@ -20,7 +20,7 @@ router.get("/menu", getMenu);
 
 router.post("/menu/additem", authenticate, authorizeRoles("admin"), upload.single("image"), setMenu);
 
-router.post("/menu/additem", authenticate, authorizeRoles('admin'), setMenu);
+// router.post("/menu/additem", authenticate, authorizeRoles('admin'), setMenu);
 
 router.delete("/menu/delete/:id", authenticate, authorizeRoles('admin'), deleteMenu);
 

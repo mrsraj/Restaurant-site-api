@@ -20,7 +20,7 @@ async function MenuStatusUpdate(req, res) {
                 return res.status(400).json({ message: "Invalid order status" });
             }
 
-            query = `UPDATE invoice SET order_status = ? WHERE invoice_id = ? AND order_status = 'pending'`;
+            query = `UPDATE invoice SET order_status = ? WHERE invoice_id = ?`;
             values = [order_status, id];
         }
 
@@ -33,7 +33,7 @@ async function MenuStatusUpdate(req, res) {
             }
 
             // payment only after accepted
-            query = `UPDATE invoice SET payment_status = ? WHERE invoice_id = ? AND payment_status = 'pending'`;
+            query = `UPDATE invoice SET payment_status = ? WHERE invoice_id = ? `;
             values = [payment_status, id];
         }
         else {
