@@ -28,7 +28,7 @@ const userLogin = async (req, res) => {
         const token = jwt.sign(
             { username: user.username, role: user.role },
             process.env.JWT_SECRET || 'defaultSecret',
-            { expiresIn: '1h' }
+            { expiresIn: '10h' }
         );
         let role = user.role;
         let user_id = results[0].id;

@@ -18,15 +18,15 @@ const statusUpdate = require("../controllers/AdminMenuStatusUpdate");
 
 router.get("/menu", getMenu);
 
-router.post("/menu/additem",authenticate,authorizeRoles("admin"),upload.single("image"),setMenu);
+router.post("/menu/additem", authenticate, authorizeRoles("admin"), upload.single("image"), setMenu);
 
 router.post("/menu/additem", authenticate, authorizeRoles('admin'), setMenu);
 
 router.delete("/menu/delete/:id", authenticate, authorizeRoles('admin'), deleteMenu);
 
-router.post("/upload", FileUploadController);
-router.get('/menu/categories', GetCategory);
-router.get('/adminmenu',adminmenu);
-router.post('/admin/status',statusUpdate);
+router.post("/upload", authenticate, authorizeRoles('admin'), FileUploadController);
+router.get('/menu/categories', authenticate, authorizeRoles('admin'), GetCategory);
+router.get('/adminmenu', authenticate, authorizeRoles('admin'), adminmenu);
+router.post('/admin/status', authenticate, authorizeRoles('admin'), statusUpdate);
 
 module.exports = router;

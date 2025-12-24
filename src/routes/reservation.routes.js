@@ -10,7 +10,7 @@ const getReservation = require('../controllers/getTableReservation.js');
 const reservationStatus = require('../controllers/UpdateReservationStatus.js');
 
 router.post('/reservation', reservation);
-router.get('/getreserv', getReservation);
-router.put('/reserveStatus',reservationStatus);
+router.get('/getreserv', authenticate, authorizeRoles("admin", "user"), getReservation);
+router.put('/reserveStatus', authenticate, authorizeRoles("admin"), reservationStatus);
 
 module.exports = router;
