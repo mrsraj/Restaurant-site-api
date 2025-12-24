@@ -1,10 +1,8 @@
-/**
- * Update reservation status
- * PUT /api/reservations/:id
- */
-export const updateReservationStatus = async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
+
+const pool = require('../config/db');
+
+const updateReservationStatus = async (req, res) => {
+    const { id, status, user_id } = req.body;
 
     const allowedStatus = ["confirmed", "cancelled", "done"];
 
@@ -16,12 +14,8 @@ export const updateReservationStatus = async (req, res) => {
 
     try {
         const [result] = await pool.query(
-            `
-      UPDATE reservations
-      SET status = ?
-      WHERE id = ?
-      `,
-            [status, id]
+            `UPDATE table_reservation SET status = ? WHERE id = ? AND user_id = ?`,
+            [status, id, user_id]
         );
 
         if (result.affectedRows === 0) {
@@ -33,6 +27,7 @@ export const updateReservationStatus = async (req, res) => {
         return res.json({
             message: "Reservation status updated",
         });
+
     } catch (error) {
         console.error("Update reservation error:", error);
         return res.status(500).json({
@@ -40,3 +35,5 @@ export const updateReservationStatus = async (req, res) => {
         });
     }
 };
+
+module.exports = updateReservationStatus;
