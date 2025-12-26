@@ -11,6 +11,8 @@ const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require("./routes/orderRoutes");
 const reservation = require('./routes/reservation.routes')
 
+const paymentRoutes = require("./routes/payment.router");
+
 const pool = require("./config/db");
 const path = require("path");
 
@@ -27,6 +29,8 @@ app.use('/auth', authRoutes);
 app.use("/api", menuRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/table",reservation);
+
+app.use("/api/payments", paymentRoutes);
 
 // GET /user
 app.get('/user', async (req, res) => {
