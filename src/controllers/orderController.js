@@ -1,86 +1,102 @@
 const { createInvoice } = require("../models/InvoiceModel");
 const { createInvoiceLine } = require("../models/InvoiceLineModel");
 const { PaymentCreation } = require("../models/PaymentModel");
-const sendOrderMessage = require("./WhatsappController");
-const pool = require("../config/db"); // e.g. mysql2/promise pool
+const pool = require("../config/db");
+const razorpay = require("../config/razorpay");
 
 exports.placeOrder = async (req, res) => {
     const {
         user_id,
         cart,
         total,
-        method,          // e.g. 'cash', 'card', 'upi'
-        reference_number, // optional
-        payment_date,
-        name     // optional
+        method, // "cash" | "online"
+        name
     } = req.body;
 
-    console.log("Test Datat = ", req);
-    
-
-    if (!user_id || !cart || !Array.isArray(cart) || cart.length === 0) {
+    if (!user_id || !Array.isArray(cart) || cart.length === 0) {
         return res.status(400).json({ message: "Invalid order data" });
     }
 
     let conn;
 
     try {
-        // Get connection & start transaction
         conn = await pool.getConnection();
         await conn.beginTransaction();
 
-        // 1. Create invoice
+        // 1️⃣ Create invoice (ORDER)
         const invoice = await createInvoice(conn, user_id, new Date(), total);
-        console.log("invoice_id = ", invoice.invoice_id);
-
         const order_id = invoice.invoice_id;
 
-        // 2. Insert invoice lines
+        // 2️⃣ Insert invoice items
         for (const item of cart) {
             const { id, finalPrice, qty } = item;
-            const line_total = finalPrice * qty;
-
-            await createInvoiceLine(conn, order_id, id, qty, finalPrice, line_total);
+            await createInvoiceLine(
+                conn,
+                order_id,
+                id,
+                qty,
+                finalPrice,
+                finalPrice * qty
+            );
         }
 
-        // 3. Create payment
-        await PaymentCreation(
-            conn,
-            order_id,
-            user_id,
-            payment_date || new Date(),
-            total,
-            method,
-            reference_number || null
-        );
+        let razorpayOrder = null;
 
-        // 4. If everything is OK -> COMMIT
-        await conn.commit();
-        const message = { order_id: order_id, name: name }
-        sendOrderMessage(message);
+        // 3️⃣ CASH PAYMENT (IMMEDIATE)
+        if (method === "cash") {
+            await PaymentCreation(
+                conn,
+                order_id,
+                user_id,
+                new Date(),
+                total,
+                "cash",
+                null
+            );
 
-        res.json({
-            message: "Order placed successfully",
-            invoice_id: order_id,
-            invoice:invoice
-        });
+            await conn.commit();
+
+            return res.json({
+                success: true,
+                message: "Cash order placed successfully",
+                invoice_id: order_id
+            });
+        }
+
+        // 4️⃣ ONLINE PAYMENT (RAZORPAY ORDER ONLY)
+        if (method != "cash") {
+            await conn.commit(); // commit DB first
+
+            razorpayOrder = await razorpay.orders.create({
+                amount: total * 100,
+                currency: "INR",
+                receipt: `order_${order_id}`
+            });
+
+            // await pool.query(
+            //     "UPDATE invoice SET razorpay_order_id = ? WHERE invoice_id = ?",
+            //     [razorpayOrder.id, order_id]
+            // );
+
+            return res.json({
+                success: true,
+                message: "Order created. Proceed to payment",
+                invoice_id: order_id,
+                razorpayOrder
+            });
+        }
+
+        throw new Error("Invalid payment method");
+
     } catch (error) {
+        if (conn) await conn.rollback();
         console.error("placeOrder error:", error);
-
-        // If any error -> ROLLBACK
-        if (conn) {
-            try {
-                await conn.rollback();
-            } catch (rollbackErr) {
-                console.error("Rollback error:", rollbackErr);
-            }
-        }
-
-        res.status(400).json({ message: error.message || "Order failed" });
+        res.status(500).json({ message: "Order failed" });
     } finally {
-        if (conn) conn.release(); // release connection back to pool
+        if (conn) conn.release();
     }
 };
+
 
 
 
