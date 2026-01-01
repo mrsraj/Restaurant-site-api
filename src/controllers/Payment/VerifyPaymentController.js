@@ -9,13 +9,15 @@ const razorpay = new Razorpay({
 });
 
 const verifyPayment = async (req, res) => {
+    console.log("I am colling");
+    
     try {
         const {
             razorpay_order_id,
             razorpay_payment_id,
             razorpay_signature,
-            invoice_id = 50,
-            customer_id = 5
+            invoice_id,
+            customer_id
         } = req.body;
 
         // 1️⃣ Validate required fields
