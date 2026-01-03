@@ -8,7 +8,7 @@ const GetCategory = require("../controllers/getCategoryController");
 const adminmenu = require("../controllers/AdminMenuController")
 
 const upload = require("../Utility/ImageUpload");
-const FileUploadController = require("../controllers/FileController")
+const FileUploadController = require("../controllers/FileController/FileController");
 
 const authenticate = require('../middlewares/authMiddleware');
 const authorizeRoles = require('../middlewares/roleMiddleware');
