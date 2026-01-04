@@ -10,6 +10,7 @@ exports.up = function (knex) {
         table.string('customer_name', 100).notNullable();
         table.string('customer_phone', 20).notNullable();
         table.string('customer_email', 100).nullable();
+        table.string("table_no", 100).nullable();
 
         table.integer('number_of_persons').unsigned().notNullable();
         table.date('reservation_date').notNullable();
