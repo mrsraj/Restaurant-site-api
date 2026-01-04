@@ -10,6 +10,7 @@ const getMenu = async () => {
             m.price,
             m.discount,
             c.c_name,
+            c.id as cat_id,
             m.is_active
         FROM menu m 
         LEFT JOIN categories c ON m.category_id = c.id

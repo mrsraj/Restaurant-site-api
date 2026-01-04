@@ -1,8 +1,12 @@
 const pool = require("../config/db");
 
+const uploadOnCloudinary = require("../Utility/Cloudinary");
+const fs = require("fs");
+
 async function createCategoryAndMenuFlat(req, res) {
     console.log("Body:", req.body);
     console.log("File:", req.file);
+    let imagePath = null;
 
     try {
         const {
@@ -15,7 +19,20 @@ async function createCategoryAndMenuFlat(req, res) {
         } = req.body;
 
         // Multer file (menu image)
-        const imagePath = req.file ? req.file.filename : null;
+        // const imagePath = req.file ? req.file.filename : null;
+
+        if (req.file) {
+            const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
+
+            if (!cloudinaryResponse) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Image upload failed",
+                });
+            }
+
+            imagePath = cloudinaryResponse.secure_url;
+        }
 
         /* ======================
            CATEGORY VALIDATION

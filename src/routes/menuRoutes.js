@@ -14,6 +14,8 @@ const authenticate = require('../middlewares/authMiddleware');
 const authorizeRoles = require('../middlewares/roleMiddleware');
 const statusUpdate = require("../controllers/AdminMenuStatusUpdate");
 
+const updateMenuItem = require("../controllers/MenuUpdate/updateMenuItem");
+
 //Menu URLs
 
 router.get("/menu", getMenu);
@@ -28,5 +30,8 @@ router.post("/upload", authenticate, authorizeRoles('admin'), FileUploadControll
 router.get('/menu/categories', authenticate, authorizeRoles('admin'), GetCategory);
 router.get('/adminmenu', authenticate, authorizeRoles('admin'), adminmenu);
 router.post('/admin/status', authenticate, authorizeRoles('admin'), statusUpdate);
+
+//update menu item
+router.put("/update/menuitem", authenticate, upload.single("image"), updateMenuItem);
 
 module.exports = router;
