@@ -11,7 +11,7 @@ exports.up = function (knex) {
         table.date('invoice_date').notNullable();
         table.date('due_date').nullable();
 
-        table.enum('order_status', ['pending', 'accepted', 'cancelled'])
+        table.enum('order_status', ['pending', 'accepted', 'cancelled','delivered'])
              .defaultTo('pending');
 
         table.enum('payment_status', ['pending','paid','unpaid','cancelled'])
