@@ -14,7 +14,7 @@ async function MenuStatusUpdate(req, res) {
 
         // 🔹 Update ORDER STATUS
         if (order_status) {
-            const allowedOrderStatus = ["accepted", "cancelled"];
+            const allowedOrderStatus = ["accepted", "cancelled","delivered"];
 
             if (!allowedOrderStatus.includes(order_status)) {
                 return res.status(400).json({ message: "Invalid order status" });
