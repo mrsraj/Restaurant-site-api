@@ -17,18 +17,24 @@ const pool = require("./config/db");
 const path = require("path");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: [
+        "https://restaurant-site-ten-liart.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE","UPDATE"],
+    credentials: true
+}));
 app.use(express.json());
 
 
 // 👇 THIS IS THE FIX
-app.use("/uploads",express.static(path.join(__dirname, "..", "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 // ROUTES
 app.use('/auth', authRoutes);
 app.use("/api", menuRoutes);
 app.use("/api/order", orderRoutes);
-app.use("/api/table",reservation);
+app.use("/api/table", reservation);
 
 app.use("/api/payments", paymentRoutes);
 
