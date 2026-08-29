@@ -14,14 +14,13 @@ const reservation = require('./routes/reservation.routes')
 const paymentRoutes = require("./routes/payment.router");
 
 const pool = require("./config/db");
+const { connectRedis } = require("./config/redis");
 const path = require("path");
 
 const app = express();
 app.use(cors({
-    origin: [
-        "https://restaurant-site-ten-liart.vercel.app"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE","UPDATE"],
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "UPDATE"],
     credentials: true
 }));
 app.use(express.json());
@@ -75,5 +74,18 @@ app.use((req, res) => {
 
 // START SERVER
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
+const startServer = async () => {
+    try {
+        // Connect to Redis 
+        await connectRedis();
+        server.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    }
+    catch (error) {
+        console.error("Failed to start server:", error); process.exit(1);
+    }
+};
+startServer();
