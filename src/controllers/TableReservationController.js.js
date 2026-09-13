@@ -1,4 +1,4 @@
-const pool = require("../config/db.js");
+﻿const pool = require("../config/db.js");
 
 const createReservation = async (req, res) => {
   try {
@@ -10,11 +10,11 @@ const createReservation = async (req, res) => {
       reservation_date,
       reservation_time,
       special_request,
-      user_id,
       table_no,
     } = req.body;
 
-    // ✅ Required fields validation (matches DB schema)
+    const user_id = req.user.id;
+    // �o. Required fields validation (matches DB schema)
     if (
       !customer_name ||
       !customer_phone ||
@@ -28,7 +28,7 @@ const createReservation = async (req, res) => {
       });
     }
 
-    // 🔁 Insert reservation
+    // dY"? Insert reservation
     const [result] = await pool.query(
       `
       INSERT INTO table_reservation
@@ -42,9 +42,10 @@ const createReservation = async (req, res) => {
         reservation_date,
         reservation_time,
         special_request,
+        restaurant_id,
         status
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
       `,
       [
         Number(user_id),
@@ -56,6 +57,7 @@ const createReservation = async (req, res) => {
         reservation_date,
         reservation_time,
         special_request || null,
+        req.restaurantId,
       ]
     );
 

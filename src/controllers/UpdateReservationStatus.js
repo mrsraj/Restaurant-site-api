@@ -1,8 +1,9 @@
-
+﻿
 const pool = require('../config/db');
 
 const updateReservationStatus = async (req, res) => {
-    const { id, status, user_id } = req.body; 
+    const { status } = req.body;
+    const id = req.params.id;
 
     const allowedStatus = ["confirmed", "cancelled", "done"];
 
@@ -14,8 +15,8 @@ const updateReservationStatus = async (req, res) => {
 
     try {
         const [result] = await pool.query(
-            `UPDATE table_reservation SET status = ? WHERE id = ? AND user_id = ?`,
-            [status, id, user_id]
+            `UPDATE table_reservation SET status = ? WHERE id = ? AND restaurant_id = ?`,
+            [status, id, req.restaurantId]
         );
 
         if (result.affectedRows === 0) {

@@ -1,16 +1,9 @@
-
-const express = require('express');
-const router = express.Router();
-
+﻿const router = require('express').Router();
 const authenticate = require('../middlewares/authMiddleware');
-const authorizeRoles = require('../middlewares/roleMiddleware');
-
-const reservation = require('../controllers/TableReservationController.js');
-const getReservation = require('../controllers/getTableReservation.js');
-const reservationStatus = require('../controllers/UpdateReservationStatus.js');
-
-router.post('/reservation', reservation);
-router.get('/getreserv', authenticate, authorizeRoles("admin", "user"), getReservation);
-router.put('/reserveStatus', authenticate, authorizeRoles("admin"), reservationStatus);
-
+const roles = require('../middlewares/roleMiddleware');
+const scope = require('../middlewares/restaurantScope');
+router.use(authenticate);
+router.post('/', roles('user'), scope, require('../controllers/TableReservationController.js.js'));
+router.get('/', roles('super_admin', 'restaurant_admin', 'user'), scope, require('../controllers/getTableReservation'));
+router.patch('/:id', roles('super_admin', 'restaurant_admin'), scope, require('../controllers/UpdateReservationStatus'));
 module.exports = router;

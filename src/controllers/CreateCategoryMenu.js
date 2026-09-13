@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+﻿const pool = require("../config/db");
 
 const uploadOnCloudinary = require("../Utility/Cloudinary");
 const fs = require("fs");
@@ -50,17 +50,17 @@ async function createCategoryAndMenuFlat(req, res) {
         let categoryId;
 
         const [existingRows] = await pool.query(
-            "SELECT id FROM categories WHERE c_name = ? LIMIT 1",
-            [c_name]
+            "SELECT id FROM categories WHERE c_name = ? AND restaurant_id = ? LIMIT 1",
+            [c_name, req.restaurantId]
         );
 
         if (existingRows.length > 0) {
             categoryId = existingRows[0].id;
         } else {
             const [catResult] = await pool.query(
-                `INSERT INTO categories (c_name, is_active)
-                 VALUES (?, ?)`,
-                [c_name, 1]
+                `INSERT INTO categories (c_name, is_active, restaurant_id)
+                 VALUES (?, ?, ?)`,
+                [c_name, 1, req.restaurantId]
             );
             categoryId = catResult.insertId;
         }
@@ -87,16 +87,17 @@ async function createCategoryAndMenuFlat(req, res) {
         ====================== */
         const [menuResult] = await pool.query(
             `INSERT INTO menu
-                (name, descriptions, image_urls, price, discount, category_id, is_active)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                (name, descriptions, image_urls, price, discount, category_id, is_active, restaurant_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 name,
                 descriptions || null,
-                imagePath,                 // ✅ multer image
+                imagePath,                 // �o. multer image
                 Number(price),
                 discount ? Number(discount) : 0,
                 categoryId,
                 Number(is_active) === 0 ? 0 : 1,
+                req.restaurantId,
             ]
         );
 

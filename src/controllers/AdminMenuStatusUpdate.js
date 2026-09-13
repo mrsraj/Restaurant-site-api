@@ -1,9 +1,14 @@
-
+﻿
 const pool = require("../config/db");
 
 async function MenuStatusUpdate(req, res) {
-    const { id, order_status, payment_status } = req.body;
+    const { order_status, payment_status } = req.body;
+    const id = req.params.id;
+    if (order_status !== undefined && payment_status !== undefined) return res.status(400).json({ message: 'Update one status at a time' });
 
+    if (req.user.role === 'kitchen' && payment_status !== undefined) {
+        return res.status(403).json({ message: 'Kitchen staff cannot change payments' });
+    }
     if (!id) {
         return res.status(400).json({ message: "Invoice ID required" });
     }
@@ -12,7 +17,7 @@ async function MenuStatusUpdate(req, res) {
         let query = "";
         let values = [];
 
-        // 🔹 Update ORDER STATUS
+        // dY"1 Update ORDER STATUS
         if (order_status) {
             const allowedOrderStatus = ["accepted", "cancelled","delivered"];
 
@@ -24,7 +29,7 @@ async function MenuStatusUpdate(req, res) {
             values = [order_status, id];
         }
 
-        // 🔹 Update PAYMENT STATUS
+        // dY"1 Update PAYMENT STATUS
         else if (payment_status) {
             const allowedPaymentStatus = ['paid', 'unpaid'];
 
@@ -40,11 +45,13 @@ async function MenuStatusUpdate(req, res) {
             return res.status(400).json({ message: "No status provided" });
         }
 
+        query += ' AND restaurant_id = ?';
+        values.push(req.restaurantId);
         const [result] = await pool.query(query, values);
 
         if (result.affectedRows === 0) {
-            return res.status(400).json({
-                message: "Status update not allowed or invoice not found"
+            return res.status(404).json({
+                message: "Order not found"
             });
         }
 

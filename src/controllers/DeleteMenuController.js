@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+﻿const pool = require("../config/db");
 
 const DeleteMenu = async (req, res) => {
     try {
@@ -11,8 +11,8 @@ const DeleteMenu = async (req, res) => {
         }
 
         const [result] = await pool.query(
-            "DELETE FROM menu WHERE id = ?",
-            [id]
+            "DELETE FROM menu WHERE id = ? AND restaurant_id = ?",
+            [id, req.restaurantId]
         );
 
         if (result.affectedRows === 0) {
@@ -21,10 +21,7 @@ const DeleteMenu = async (req, res) => {
             });
         }
 
-        return res.status(200).json({
-            success: true,
-            message: "Menu item deleted successfully",
-        });
+        return res.status(204).end();
 
     } catch (error) {
         console.error("Delete Menu Error:", error);

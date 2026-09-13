@@ -1,14 +1,10 @@
-const express = require('express');
-const router = express.Router();
-
+﻿const router = require('express').Router();
 const authenticate = require('../middlewares/authMiddleware');
-const authorizeRoles = require('../middlewares/roleMiddleware');
-
-
-const { placeOrder } = require("../controllers/orderController");
-const OrderStatus = require("../controllers/OrderStatusController");   // ✅ ADD THIS LINE
-
-router.post("/orders", authenticate,authorizeRoles('user'), placeOrder);
-router.get("/status/:invoice_id", authenticate,authorizeRoles('user'), OrderStatus); 
-
+const roles = require('../middlewares/roleMiddleware');
+const scope = require('../middlewares/restaurantScope');
+router.use(authenticate);
+router.post('/', roles('user'), require('../controllers/orderController').placeOrder);
+router.get('/', roles('super_admin', 'restaurant_admin', 'kitchen'), scope, require('../controllers/AdminMenuController'));
+router.get('/:id', roles('user'), require('../controllers/OrderStatusController'));
+router.patch('/:id', roles('super_admin', 'restaurant_admin', 'kitchen'), scope, require('../controllers/AdminMenuStatusUpdate'));
 module.exports = router;

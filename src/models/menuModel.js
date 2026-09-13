@@ -1,6 +1,6 @@
-const pool = require('../config/db');
+﻿const pool = require('../config/db');
 
-const getMenu = async () => {
+const getMenu = async (restaurantId) => {
     const [rows] = await pool.query(`
         SELECT 
             m.id, 
@@ -14,7 +14,8 @@ const getMenu = async () => {
             m.is_active
         FROM menu m 
         LEFT JOIN categories c ON m.category_id = c.id
-    `);
+        WHERE m.restaurant_id = ?
+    `, [restaurantId]);
     return rows;
 };
 

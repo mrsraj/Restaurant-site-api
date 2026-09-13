@@ -1,4 +1,4 @@
-const razorpay = require("../../config/razorpay"); // adjust path as needed
+﻿const razorpay = require("../../config/razorpay"); // adjust path as needed
 
 const createOrder = async (req, res) => {
     try {
@@ -15,7 +15,7 @@ const createOrder = async (req, res) => {
         };
 
         const order = await razorpay.orders.create(options);
-        res.status(200).json(order);
+        res.status(201).json(order);
 
     } catch (err) {
         console.error(err);

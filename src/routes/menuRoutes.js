@@ -1,37 +1,18 @@
-const express = require('express');
-const router = express.Router();
-
-const getMenu = require("../controllers/menuController");
-const setMenu = require("../controllers/CreateCategoryMenu")
-const deleteMenu = require("../controllers/DeleteMenuController");
-const GetCategory = require("../controllers/getCategoryController");
-const adminmenu = require("../controllers/AdminMenuController")
-
-const upload = require("../Utility/ImageUpload");
-const FileUploadController = require("../controllers/FileController/FileController");
-
+﻿const router = require('express').Router();
+const scope = require('../middlewares/restaurantScope');
 const authenticate = require('../middlewares/authMiddleware');
-const authorizeRoles = require('../middlewares/roleMiddleware');
-const statusUpdate = require("../controllers/AdminMenuStatusUpdate");
-
-const updateMenuItem = require("../controllers/MenuUpdate/updateMenuItem");
-
-//Menu URLs
-
-router.get("/menu", getMenu);
-
-router.post("/menu/additem", authenticate, authorizeRoles("admin"), upload.single("image"), setMenu);
-
-// router.post("/menu/additem", authenticate, authorizeRoles('admin'), setMenu);
-
-router.delete("/menu/delete/:id", authenticate, authorizeRoles('admin'), deleteMenu);
-
-router.post("/upload", authenticate, authorizeRoles('admin'), FileUploadController);
-router.get('/menu/categories', authenticate, authorizeRoles('admin'), GetCategory);
-router.get('/adminmenu', authenticate, authorizeRoles('admin'), adminmenu);
-router.post('/admin/status', authenticate, authorizeRoles('admin'), statusUpdate);
-
-//update menu item
-router.put("/update/menuitem", authenticate, upload.single("image"), updateMenuItem);
-
+const roles = require('../middlewares/roleMiddleware');
+const upload = require('../Utility/ImageUpload');
+const admin = [authenticate, roles('super_admin', 'restaurant_admin'), scope];
+router.get('/menu-items', scope, require('../controllers/menuController'));
+router.get('/menu-items/:id', scope, async (req, res) => {
+  const [rows] = await require('../config/db').query('SELECT * FROM menu WHERE id = ? AND restaurant_id = ?', [req.params.id, req.restaurantId]);
+  if (!rows.length) return res.status(404).json({ message: 'Menu item not found' });
+  res.json({ success: true, data: rows[0] });
+});
+router.post('/menu-items', ...admin, upload.single('image'), require('../controllers/CreateCategoryMenu'));
+router.patch('/menu-items/:id', ...admin, upload.single('image'), require('../controllers/MenuUpdate/updateMenuItem'));
+router.delete('/menu-items/:id', ...admin, require('../controllers/DeleteMenuController'));
+router.get('/categories', ...admin, require('../controllers/getCategoryController'));
+router.post('/uploads', ...admin, upload.single('image'), require('../controllers/FileController/FileController'));
 module.exports = router;

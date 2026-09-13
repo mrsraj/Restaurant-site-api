@@ -1,9 +1,9 @@
-const pool = require('../config/db');
+﻿const pool = require('../config/db');
 
 async function GetCategory(req, res) {
     try {
         const [categories] = await pool.query(
-            'SELECT id, c_name FROM categories'
+            'SELECT id, c_name FROM categories WHERE restaurant_id = ?', [req.restaurantId]
         );
 
         return res.status(200).json(categories);

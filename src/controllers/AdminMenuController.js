@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+﻿const pool = require("../config/db");
 
 async function AdminMenuController(req, res) {
     try {
@@ -17,10 +17,11 @@ async function AdminMenuController(req, res) {
       JOIN invoice i ON u.id = i.customer_id
       JOIN invoice_item it ON it.invoice_id = i.invoice_id
       JOIN menu p ON p.id = it.product_id
+      WHERE i.restaurant_id = ?
       
-    `);
+    `, [req.restaurantId]);
 
-        // ✅ Grouping logic (Option 1)
+        // �o. Grouping logic (Option 1)
         const result = Object.values(
             rows.reduce((acc, row) => {
                 if (!acc[row.invoice_id]) {

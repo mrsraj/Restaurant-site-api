@@ -1,4 +1,4 @@
-const uploadOnCloudinary = require("../../Utility/Cloudinary");
+﻿const uploadOnCloudinary = require("../../Utility/Cloudinary");
 
 const FileUploadController = async (req, res) => {
     try {
@@ -14,7 +14,7 @@ const FileUploadController = async (req, res) => {
             return res.status(500).json({ message: "Upload failed" });
         }
 
-        return res.status(200).json({
+        return res.status(201).json({
             message: "Upload successful",
             url: cloudinaryResponse.secure_url,
             public_id: cloudinaryResponse.public_id,

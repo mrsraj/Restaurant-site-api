@@ -1,28 +1,15 @@
-const express = require('express');
-const router = express.Router();
-
-const userLogin = require('../controllers/LoginController');
-const userRegistration = require('../controllers/UserRegistration');
-
+﻿const { roleSql } = require('../config/roles');
+const router = require('express').Router();
 const authenticate = require('../middlewares/authMiddleware');
-const authorizeRoles = require('../middlewares/roleMiddleware');
-const forgetPassword = require('../controllers/Password/ForgetPassword');
-const VerifyOtpAndResetPassword = require('../controllers/Password/verifyOtpController');
-
-// POST /auth/user/login
-router.post('/user/login', userLogin);
-
-// POST /auth/user/register
-router.post('/user/register', userRegistration);
-router.post('/forget/password', forgetPassword);
-router.post('/verify-otp', VerifyOtpAndResetPassword);
-
-router.get('/user', authenticate, authorizeRoles('user', 'admin'), (req, res) => {
-    res.json({ message: 'Hello user!' });
+const roles = require('../middlewares/roleMiddleware');
+const pool = require('../config/db');
+router.post('/sessions', require('../controllers/LoginController'));
+router.post('/users', require('../controllers/UserRegistration'));
+router.get('/users/me', authenticate, (req, res) => res.json({ ...req.user, user_id: req.user.id }));
+router.get('/users', authenticate, roles('super_admin'), async (req, res) => {
+  const [users] = await pool.query('SELECT u.id, u.username, u.email, u.mob_no, u.role_id, u.isActive, u.restaurant_id, ' + roleSql + ' AS role FROM users u LEFT JOIN roles r ON r.role_id = u.role_id');
+  res.json(users);
 });
-
-router.get('/admin', authenticate, authorizeRoles('admin'), (req, res) => {
-    res.json({ message: 'Hello Admin!' });
-});
-
+router.post('/password-reset-requests', require('../controllers/Password/ForgetPassword'));
+router.post('/password-resets', require('../controllers/Password/verifyOtpController'));
 module.exports = router;
