@@ -10,6 +10,7 @@ require.cache[dbPath] = { id: dbPath, filename: dbPath, loaded: true, exports: {
       const roles = { 1: 'kitchen', 2: 'restaurant_admin', 3: 'super_admin', 4: 'user' };
       return [[{ id: values[0], username: 'Test', role: roles[values[0]], restaurant_id: 1 }]];
     }
+    if (sql.startsWith('SELECT order_status, payment_status FROM invoice')) return [[{ order_status: 'accepted', payment_status: 'pending' }]];
     if (sql.startsWith('SELECT id FROM restaurants')) return [[{ id: 1 }]];
     if (sql.startsWith('SELECT id FROM menu')) return [[{ id: values[0] }]];
     if (sql.startsWith('UPDATE menu') || sql.startsWith('DELETE FROM menu') || sql.startsWith('UPDATE invoice')) {
@@ -18,7 +19,7 @@ require.cache[dbPath] = { id: dbPath, filename: dbPath, loaded: true, exports: {
     return [[]];
   }
 }};
-const { server } = require('../src/app');
+const { server } = require('../src/server');
 let base;
 before(async () => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -54,7 +55,7 @@ test('kitchen is forbidden from menu mutation but can update an order', async ()
     method: 'PATCH', headers: headers(1), body: JSON.stringify({ price: 120 })
   })).status, 403);
   assert.equal((await fetch(base + '/api/v1/orders/7', {
-    method: 'PATCH', headers: headers(1), body: JSON.stringify({ order_status: 'accepted' })
+    method: 'PATCH', headers: headers(1), body: JSON.stringify({ order_status: 'preparing' })
   })).status, 200);
 });
 test('DELETE returns 204 with no response body', async () => {

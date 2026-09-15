@@ -1,202 +1,25 @@
-🍽️ # Restaurant Admin Dashboard – Backend
+﻿# Restaurant management API
 
-   Backend server for the Restaurant Admin Dashboard, built using Node.js, Express, MySQL, and Knex.js.
-   Handles authentication, menu management, orders, payments (Razorpay), and analytics APIs.
+Node.js and Express backend for restaurant menus, orders, reservations, staff access and payments. The JSON API is mounted under `/api/v1`.
 
-# Features
+## Development
 
-🔐 JWT-based Admin Authentication
-📜 Menu Management (CRUD)
-🛒 Orders Management
-💳 Razorpay Payment Integration
-📊 Revenue & Order Analytics
-🔔 Centralized Error Handling
+Install dependencies with `npm install`, configure the existing environment and database connection, then run:
 
-# Tech Stack
+```text
+npm run dev
+```
 
-Runtime: Node.js
-Framework: Express.js
-Database: MySQL
-Query Builder: Knex.js
-Connection Pool: MySQL2 (via Knex)
-Authentication: JWT
-Payments: Razorpay
-Config: dotenv
+Production entry point: `npm start` (`src/server.js`). Importing `src/app.js` creates the Express application without starting a listener. Development uses Node's built-in watch mode. Startup and tests were verified locally with Node 24.
 
-# Folder Structure
-restaurant-admin-backend/
-│── src/
+Run regression tests with `npm test`. Tests mock database/integration boundaries and do not send emails, WhatsApp messages or payments.
 
-│   ├── config/
+## Project guides
 
-│   │   └── db.js
+- [Folder structure and development conventions](STRUCTURE.md)
+- [REST endpoints](REST_API.md)
+- [Role authentication and database setup](ROLE_AUTH.md)
 
-│   ├── controllers/
+The current separation is routes, controllers, feature services, reusable models, middleware and integrations. The folder refactor does not require a database migration. Existing role-table setup and migration-history caveats are documented in ROLE_AUTH.md.
 
-│   ├── routes/
-
-│   ├── middlewares/
-
-│   ├── services/
-
-│   ├── utils/
-
-│   └── server.js
-│
-│── knexfile.js
-│── .env
-│── package.json
-│── README.md
-
-⚙️ Environment Variables
-
-    PORT=3000
-    DB_HOST=localhost
-    DB_USER=root
-    DB_PASSWORD=your_password
-    DB_NAME=restaurant_db
-    DB_PORT=3306
-
-    JWT_SECRET=your_jwt_secret
-
-    RAZORPAY_KEY_ID=rzp_test_xxxxx
-    RAZORPAY_KEY_SECRET=xxxxxxxx
-
-🔗 Knex + MySQL Pool Configuration
-
-    knexfile.js
-    import dotenv from "dotenv";
-    dotenv.config();
-
-export default {
-
-  client: "mysql2",
-  
-  connection: {
-  
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-  },
-  
-   pool: {
-     min: 2,
-     max: 10,
-  },
-  migrations: {
-    directory: "./src/migrations",
-  },
-};
-
-src/config/db.js
-import knex from "knex";
-import config from "../../knexfile.js";
-
-const db = knex(config);
-
-export default db;
-
-🗄️ Database Table Creation (Knex Migrations)
-Create users Table
-export function up(knex) {
-  return knex.schema.createTable("users", (table) => {
-    table.increments("id").primary();
-    table.string("name").notNullable();
-    table.string("email").unique().notNullable();
-    table.string("password").notNullable();
-    table.timestamps(true, true);
-  });
-}
-
-export function down(knex) {
-  return knex.schema.dropTable("users");
-}
-
-# Create menu_items Table
-
-export function up(knex) {
-
-  return knex.schema.createTable("menu_items", (table) => {
-  
-    table.increments("id").primary();
-    table.string("name").notNullable();
-    table.decimal("price", 10, 2).notNullable();
-    table.integer("discount").defaultTo(0);
-    table.boolean("available").defaultTo(true);
-    table.timestamps(true, true);
-    
-  });
-}
-
-# Run Migrations
-
-   npx knex migrate:latest
-
-# Install Dependencies
-
-   npm install
-
-# Start Server
-
-   Development
-   npm run dev
-   Production
-   npm start
-
-# API Endpoints
-   Auth
-   
-   POST /api/auth/login
-   
-  Menu
-
-GET /api/menu
-
-POST /api/menu
-
-PUT /api/menu/:id
-
-DELETE /api/menu/:id
-
-# Orders
-
-GET /api/orders
-
-POST /api/orders
-
-PUT /api/orders/:id/status
-
-# Payments
-
-POST /api/payment/create-order
-
-POST /api/payment/verify
-
-# Razorpay Payment Flow
-
-Frontend requests order creation
-
-Backend creates Razorpay order
-
-Frontend opens Razorpay Checkout
-
-Backend verifies payment signature
-
-Order & payment status saved in MySQL
-
-# 🔒  Security Notes
-
-Do not expose Razorpay secret keys
-
-Use HTTPS in production
-
-Validate all requests
-
-Verify payments server-side
-
-# 📌 Author
-
-Restaurant Admin Dashboard – Backend
-Built with Node.js, Express, MySQL, Knex.js
+Database access currently uses `src/config/db.js`; Knex migration configuration is in `knexfile.js`. Verify both configurations target the intended database before running migrations. Runtime file uploads are stored in `uploads/` before the Cloudinary integration processes them.

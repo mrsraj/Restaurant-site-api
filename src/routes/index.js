@@ -1,1 +1,13 @@
-// Combine and export all routes
+const router = require('express').Router();
+router.get('/health', (req, res) => res.json({ status: 'ok' }));
+router.use(require('./auth.routes'));
+router.use('/users', require('./users.routes'));
+router.use('/menu-items', require('./menu.routes'));
+router.use('/categories', require('./categories.routes'));
+router.use('/uploads', require('./uploads.routes'));
+router.use('/orders', require('./orders.routes'));
+router.use('/reservations', require('./reservations.routes'));
+router.use(require('./payments.routes'));
+router.use('/restaurants', require('./restaurants.routes'));
+router.use('/staff', require('./staff.routes'));
+module.exports = router;

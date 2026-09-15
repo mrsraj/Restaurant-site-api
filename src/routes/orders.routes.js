@@ -1,0 +1,10 @@
+﻿const router = require('express').Router();
+const orders = require('../controllers/orders/orders.controller');
+const roles = require('../middlewares/authorize.middleware');
+const scope = require('../middlewares/restaurant-scope.middleware');
+router.use(require('../middlewares/auth.middleware'));
+router.post('/', roles('user'), orders.create);
+router.get('/', roles('super_admin', 'restaurant_admin', 'kitchen'), scope, orders.list);
+router.get('/:id', roles('user'), orders.get);
+router.patch('/:id', roles('super_admin', 'restaurant_admin', 'kitchen'), scope, orders.update);
+module.exports = router;

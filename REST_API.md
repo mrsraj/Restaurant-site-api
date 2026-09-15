@@ -57,3 +57,18 @@ Content-Type: application/json
 {"order_status":"accepted"}
 ```
 
+
+## Order preparation workflow
+
+Orders follow pending -> accepted -> preparing -> completed -> delivered.
+
+| Actor | Allowed transition |
+| --- | --- |
+| Restaurant admin | pending -> accepted |
+| Kitchen | accepted -> preparing |
+| Kitchen | preparing -> completed |
+| Restaurant admin | completed -> delivered |
+
+Super admins retain administrator actions for the selected restaurant. Kitchen lists contain only accepted, preparing, and completed orders within their assigned restaurant; pending, cancelled, and delivered orders are excluded. Kitchen staff cannot accept, deliver, cancel, or change payment status. Administrators may cancel unpaid orders before delivery. Invalid transitions and concurrent status changes return HTTP 409; unauthorized actions return HTTP 403.
+
+Use PATCH /api/v1/orders/:id with one status field, for example {"order_status":"preparing"}. Migration 20260915000000_kitchen_order_workflow.js adds preparing and completed to invoice.order_status and was applied to the local database on 2026-09-15. Other installations must apply this migration before using these statuses.
