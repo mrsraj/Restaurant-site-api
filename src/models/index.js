@@ -1,5 +1,6 @@
 // Registry keys match SQL table names.
 module.exports = {
+  restaurant_home: require('./restaurant-home.model'),
   categories: require('./category.model'),
   gallery: require('./gallery.model'),
   invoice: require('./invoice.model'),

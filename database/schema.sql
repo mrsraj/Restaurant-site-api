@@ -151,3 +151,5 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_email_unique` (`email`),
   KEY `users_restaurant_id_foreign` (`restaurant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS restaurant_home (id INT UNSIGNED NOT NULL AUTO_INCREMENT, restaurant_id INT UNSIGNED NOT NULL, hero_title VARCHAR(255) DEFAULT NULL, hero_image_url VARCHAR(500) DEFAULT NULL, description TEXT, opening_hours TEXT, sections JSON DEFAULT NULL, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), UNIQUE KEY restaurant_home_restaurant_unique (restaurant_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

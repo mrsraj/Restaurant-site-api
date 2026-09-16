@@ -1,6 +1,7 @@
 const router = require('express').Router();
 router.get('/health', (req, res) => res.json({ status: 'ok' }));
 router.use(require('./auth.routes'));
+router.use('/home', require('./home.routes'));
 router.use('/users', require('./users.routes'));
 router.use('/menu-items', require('./menu.routes'));
 router.use('/categories', require('./categories.routes'));

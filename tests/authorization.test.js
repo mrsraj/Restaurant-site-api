@@ -310,3 +310,20 @@ test('kitchen order listing filters out pending, cancelled and delivered tickets
     assert.equal((await list({}, { user: { role }, restaurantId: 2 })).length, 0);
   }
 });
+
+test('home reads only the selected restaurant and handles empty content', async () => {
+  const get = load('services/home/get.service.js', {
+    '../models/restaurant-home.model': { findByRestaurant: async id => { assert.equal(id, 7); return { id, name: 'Restaurant', sections: null }; } },
+    '../config/db': { query: async (sql, args) => { assert.match(sql, /restaurant_id = \? AND is_active = 1/); assert.equal(args[0], 7); return [[]]; } }
+  });
+  const result = await get({}, { restaurantId: 7 });
+  assert.equal(result.restaurant.sections.length, 0);
+  assert.equal(result.dishes.length, 0);
+});
+test('home rejects missing restaurants', async () => {
+  const get = load('services/home/get.service.js', {
+    '../models/restaurant-home.model': { findByRestaurant: async () => null },
+    '../config/db': { query: async () => assert.fail('Must not read dishes') }
+  });
+  await assert.rejects(get({}, { restaurantId: 7 }), error => error.status === 404);
+});
