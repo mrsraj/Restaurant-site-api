@@ -1,8 +1,8 @@
-const socketIO = require('socket.io');
-const authenticate = require('../middlewares/auth.middleware');
-const scope = require('../middlewares/restaurant-scope.middleware');
-const pool = require('../config/db');
-const events = require('./order-events');
+import { Server } from 'socket.io';
+import authenticate from '../middlewares/auth.middleware.js';
+import scope from '../middlewares/restaurant-scope.middleware.js';
+import pool from '../config/db.js';
+import events from './order-events.js';
 function middleware(handler, req) {
   return new Promise((resolve, reject) => {
     const res = { status() { return this; }, json() { reject(new Error('Socket access denied')); } };
@@ -17,8 +17,8 @@ async function identity(socket) {
   if (req.user.role !== 'user') await middleware(scope, req);
   return { room: req.user.role === 'user' ? 'customer:' + req.user.id : 'restaurant:' + req.restaurantId, role: req.user.role };
 }
-module.exports = server => {
-  const io = socketIO(server, { cors: { origin: '*' } });
+const initializeSockets = (server) => {
+  const io = new Server(server, { cors: { origin: '*' } });
   io.use(async (socket, next) => {
     try { socket.data.identity = await identity(socket); next(); }
     catch { next(new Error('Authentication or restaurant access denied')); }
@@ -46,3 +46,5 @@ module.exports = server => {
   server.on('close', () => events.off('changed', notify));
   return io;
 };
+
+export default initializeSockets;

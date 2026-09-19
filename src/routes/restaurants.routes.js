@@ -1,7 +1,12 @@
-﻿const router = require('express').Router();
-const restaurants = require('../controllers/restaurants/restaurants.controller');
-const roles = require('../middlewares/authorize.middleware');
-router.use(require('../middlewares/auth.middleware'), roles('super_admin', 'restaurant_admin'));
+import { Router } from 'express';
+import * as restaurants from '../controllers/restaurants/restaurants.controller.js';
+import authenticate from '../middlewares/auth.middleware.js';
+import roles from '../middlewares/authorize.middleware.js';
+
+const router = Router();
+
+router.use(authenticate, roles('super_admin', 'restaurant_admin'));
 router.get('/', restaurants.list);
 router.post('/', roles('super_admin'), restaurants.create);
-module.exports = router;
+
+export default router;

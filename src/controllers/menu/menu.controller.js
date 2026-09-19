@@ -1,6 +1,11 @@
-﻿const handle = require('../../utils/controller');
-exports.list = handle(require('../../services/menu/list.service'), 200);
-exports.create = handle(require('../../services/menu/create.service'), 201);
-exports.update = handle(require('../../services/menu/update.service'), 200);
-exports.remove = handle(require('../../services/menu/remove.service'), 204);
-exports.get = handle(require('../../services/menu/get.service'), 200);
+import handle from '../../utils/controller.js';
+import service1 from '../../services/menu/list.service.js';
+import service2 from '../../services/menu/create.service.js';
+import service3 from '../../services/menu/update.service.js';
+import service4 from '../../services/menu/remove.service.js';
+import service5 from '../../services/menu/get.service.js';
+export const list = handle(service1, 200);
+export const create = handle(service2, 201);
+export const update = handle(service3, 200);
+export const remove = handle(service4, 204);
+export const get = handle(service5, 200);

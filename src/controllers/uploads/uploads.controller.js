@@ -1,2 +1,3 @@
-﻿const handle = require('../../utils/controller');
-exports.create = handle(require('../../services/uploads/create.service'), 201);
+import handle from '../../utils/controller.js';
+import service1 from '../../services/uploads/create.service.js';
+export const create = handle(service1, 201);

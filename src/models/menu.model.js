@@ -1,6 +1,9 @@
-const pool = require('../config/db');
-const getMenu = async restaurantId => {
-  const [rows] = await pool.query(`
+import pool from '../config/db.js';
+import tableModel from './table-model.js';
+
+const getMenu = async (restaurantId) => {
+  const [rows] = await pool.query(
+    `
         SELECT 
             m.id, 
             m.name, 
@@ -14,24 +17,29 @@ const getMenu = async restaurantId => {
         FROM menu m 
         LEFT JOIN categories c ON m.category_id = c.id
         WHERE m.restaurant_id = ?
-    `, [restaurantId]);
+    `,
+    [restaurantId],
+  );
+
   return rows;
 };
-module.exports = getMenu;
 
-Object.assign(module.exports, require('./table-model')({
-  "table": "menu",
-  "primaryKey": "id",
-  "columns": [
-    "id",
-    "name",
-    "descriptions",
-    "image_urls",
-    "price",
-    "discount",
-    "category_id",
-    "is_active",
-    "created_at",
-    "restaurant_id"
-  ]
-}));
+const menuModel = tableModel({
+  table: 'menu',
+  primaryKey: 'id',
+  columns: [
+    'id',
+    'name',
+    'descriptions',
+    'image_urls',
+    'price',
+    'discount',
+    'category_id',
+    'is_active',
+    'created_at',
+    'restaurant_id',
+  ],
+});
+
+export { menuModel };
+export default Object.assign(getMenu, menuModel);

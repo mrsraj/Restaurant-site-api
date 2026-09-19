@@ -1,14 +1,29 @@
-const router = require('express').Router();
+import { Router } from 'express';
+import authRoutes from './auth.routes.js';
+import homeRoutes from './home.routes.js';
+import usersRoutes from './users.routes.js';
+import menuRoutes from './menu.routes.js';
+import categoriesRoutes from './categories.routes.js';
+import uploadsRoutes from './uploads.routes.js';
+import ordersRoutes from './orders.routes.js';
+import reservationsRoutes from './reservations.routes.js';
+import paymentsRoutes from './payments.routes.js';
+import restaurantsRoutes from './restaurants.routes.js';
+import staffRoutes from './staff.routes.js';
+
+const router = Router();
+
 router.get('/health', (req, res) => res.json({ status: 'ok' }));
-router.use(require('./auth.routes'));
-router.use('/home', require('./home.routes'));
-router.use('/users', require('./users.routes'));
-router.use('/menu-items', require('./menu.routes'));
-router.use('/categories', require('./categories.routes'));
-router.use('/uploads', require('./uploads.routes'));
-router.use('/orders', require('./orders.routes'));
-router.use('/reservations', require('./reservations.routes'));
-router.use(require('./payments.routes'));
-router.use('/restaurants', require('./restaurants.routes'));
-router.use('/staff', require('./staff.routes'));
-module.exports = router;
+router.use(authRoutes);
+router.use('/home', homeRoutes);
+router.use('/users', usersRoutes);
+router.use('/menu-items', menuRoutes);
+router.use('/categories', categoriesRoutes);
+router.use('/uploads', uploadsRoutes);
+router.use('/orders', ordersRoutes);
+router.use('/reservations', reservationsRoutes);
+router.use(paymentsRoutes);
+router.use('/restaurants', restaurantsRoutes);
+router.use('/staff', staffRoutes);
+
+export default router;

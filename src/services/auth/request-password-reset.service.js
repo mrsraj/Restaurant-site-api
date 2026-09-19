@@ -1,7 +1,7 @@
-const AppError = require('../../utils/app-error');
-const pool = require('../../config/db');
-const bcrypt = require('bcrypt');
-const sendMail = require("../../integrations/mail");
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
+import bcrypt from 'bcrypt';
+import sendMail from '../../integrations/mail.js';
 const ForgetPassword = async (input = {}, context = {}) => {
   const {
     mob_no
@@ -39,4 +39,4 @@ const ForgetPassword = async (input = {}, context = {}) => {
     });
   }
 };
-module.exports = ForgetPassword;
+export default ForgetPassword;

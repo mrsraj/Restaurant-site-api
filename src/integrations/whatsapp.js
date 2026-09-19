@@ -1,5 +1,5 @@
-const twilio = require('twilio');
-require('dotenv').config();
+import twilio from 'twilio';
+import 'dotenv/config';
 const accountSid = process.env.Account_SID;
 const authToken = process.env.Auth_Token;
 const client = new twilio(accountSid, authToken);
@@ -11,4 +11,4 @@ function sendOrderMessage(req) {
     body: `Hi ${req.name}! Your food order (ID: ${req.order_id}) has been received. 🍔`
   }).then(message => console.log('Message SID:', message.sid)).catch(console.error);
 }
-module.exports = sendOrderMessage;
+export default sendOrderMessage;

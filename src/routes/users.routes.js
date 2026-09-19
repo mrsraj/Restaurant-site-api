@@ -1,8 +1,12 @@
-﻿const router = require('express').Router();
-const users = require('../controllers/users/users.controller');
-const authenticate = require('../middlewares/auth.middleware');
-const roles = require('../middlewares/authorize.middleware');
+import { Router } from 'express';
+import * as users from '../controllers/users/users.controller.js';
+import authenticate from '../middlewares/auth.middleware.js';
+import roles from '../middlewares/authorize.middleware.js';
+
+const router = Router();
+
 router.post('/', users.register);
 router.get('/me', authenticate, users.me);
 router.get('/', authenticate, roles('super_admin'), users.list);
-module.exports = router;
+
+export default router;

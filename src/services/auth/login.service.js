@@ -1,10 +1,10 @@
-const AppError = require('../../utils/app-error');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const {
+import AppError from '../../utils/app-error.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import {
   getUserByUsername
-} = require("../../models/user.model");
-module.exports = async (input = {}, context = {}) => {
+} from '../../models/user.model.js';
+export default async (input = {}, context = {}) => {
   const {
     username,
     password

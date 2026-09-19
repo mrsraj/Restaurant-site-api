@@ -1,25 +1,47 @@
-const http = require('http');
-const app = require('./app');
-const pool = require('./config/db');
+import "dotenv/config";
+import http from "http";
+
+import app from "./app.js";
+import pool from "./config/db.js";
+import initializeSockets from "./sockets.js";
+
 const server = http.createServer(app);
-require('./sockets')(server);
+
+// Initialize Socket.IO
+initializeSockets(server);
+
 async function startServer(port = process.env.PORT || 3000) {
-  await pool.query('SELECT 1');
-  await new Promise((resolve, reject) => {
-    server.once('error', reject);
-    server.listen(port, () => {
-      server.removeListener('error', reject);
-      console.log('Server running on port ' + server.address().port);
-      resolve();
+  try {
+    // Verify database connection before starting server
+    await pool.query("SELECT 1");
+    console.log("Database connected successfully");
+
+    await new Promise((resolve, reject) => {
+      server.once("error", reject);
+
+      server.listen(port, () => {
+        server.removeListener("error", reject);
+
+        console.log(
+          `Server running on port ${server.address().port}`
+        );
+
+        resolve();
+      });
     });
-  });
-  return server;
+
+    return server;
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    throw error;
+  }
 }
-if (require.main === module) {
-  startServer().catch(async error => {
-    console.error('Failed to start server:', error.message);
-    await pool.end();
-    process.exitCode = 1;
-  });
-}
-module.exports = { app, server, startServer };
+
+startServer().catch(async (error) => {
+  console.error("Server startup failed:", error);
+
+  await pool.end();
+  process.exit(1);
+});
+
+export { app, server, startServer };

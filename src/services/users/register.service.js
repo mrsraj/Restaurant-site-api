@@ -1,7 +1,7 @@
-const AppError = require('../../utils/app-error');
-const pool = require("../../config/db");
-const bcrypt = require('bcrypt');
-module.exports = async (input = {}, context = {}) => {
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
+import bcrypt from 'bcrypt';
+export default async (input = {}, context = {}) => {
   const {
     username,
     email,

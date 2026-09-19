@@ -1,15 +1,27 @@
-// Registry keys match SQL table names.
-module.exports = {
-  restaurant_home: require('./restaurant-home.model'),
-  categories: require('./category.model'),
-  gallery: require('./gallery.model'),
-  invoice: require('./invoice.model'),
-  invoice_item: require('./invoice-item.model'),
-  menu: require('./menu.model'),
-  payment: require('./payment.model'),
-  restaurant_info: require('./restaurant-info.model'),
-  restaurants: require('./restaurant.model'),
-  roles: require('./role.model'),
-  table_reservation: require('./table-reservation.model'),
-  users: require('./user.model')
+import restaurantHome from './restaurant-home.model.js';
+import categories from './category.model.js';
+import gallery from './gallery.model.js';
+import invoice from './invoice.model.js';
+import invoiceItem from './invoice-item.model.js';
+import menu from './menu.model.js';
+import payment from './payment.model.js';
+import restaurantInfo from './restaurant-info.model.js';
+import restaurants from './restaurant.model.js';
+import roles from './role.model.js';
+import tableReservation from './table-reservation.model.js';
+import users from './user.model.js';
+
+export default {
+  restaurant_home: restaurantHome,
+  categories,
+  gallery,
+  invoice,
+  invoice_item: invoiceItem,
+  menu,
+  payment,
+  restaurant_info: restaurantInfo,
+  restaurants,
+  roles,
+  table_reservation: tableReservation,
+  users,
 };

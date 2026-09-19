@@ -1,4 +1,4 @@
-﻿const pool = require('../src/config/db');
+import pool from '../src/config/db.js';
 async function seed() {
   const conn = await pool.getConnection();
   try {

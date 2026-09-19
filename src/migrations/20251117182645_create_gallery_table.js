@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function (knex) {
+export function up(knex) {
     return knex.schema.createTable('gallery', function (table) {
         table.increments('id').primary();
         table.string('image_url', 255).notNullable();  // gallery image link
@@ -15,6 +15,6 @@ exports.up = function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function (knex) {
+export function down(knex) {
     return knex.schema.dropTable('gallery');
 };

@@ -1,4 +1,4 @@
-﻿exports.up = async function (knex) {
+export async function up(knex) {
   await knex.schema.createTable('restaurants', table => {
     table.increments('id').primary();
     table.string('name', 150).notNullable();
@@ -24,7 +24,7 @@
     table.datetime('otp_expiry').nullable().alter();
   });
 };
-exports.down = async function (knex) {
+export async function down(knex) {
   // Refuse to collapse multiple restaurants or privileged accounts into the legacy schema.
   const [{ count }] = await knex('restaurants').count('* as count');
   const privileged = await knex('users').whereIn('role', ['super_admin', 'kitchen']).first();

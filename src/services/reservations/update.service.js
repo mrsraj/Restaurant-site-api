@@ -1,5 +1,5 @@
-const AppError = require('../../utils/app-error');
-const pool = require("../../config/db");
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
 const updateReservationStatus = async (input = {}, context = {}) => {
   const {
     status
@@ -29,4 +29,4 @@ const updateReservationStatus = async (input = {}, context = {}) => {
     });
   }
 };
-module.exports = updateReservationStatus;
+export default updateReservationStatus;

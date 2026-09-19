@@ -1,5 +1,5 @@
-﻿require('dotenv').config();
-const pool = require('../src/config/db');
+import 'dotenv/config';
+import pool from '../src/config/db.js';
 async function main() {
   const mobile = process.argv[2];
   if (!mobile) throw new Error('Usage: node scripts/bootstrap-super-admin.js <existing-account-mobile>');

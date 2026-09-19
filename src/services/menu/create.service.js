@@ -1,7 +1,7 @@
-const AppError = require('../../utils/app-error');
-const pool = require("../../config/db");
-const uploadOnCloudinary = require("../../integrations/cloudinary");
-const fs = require("fs");
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
+import uploadOnCloudinary from '../../integrations/cloudinary.js';
+import fs from 'fs';
 async function createCategoryAndMenuFlat(input = {}, context = {}) {
   console.log("Body:", input);
   console.log("File:", context.file);
@@ -70,4 +70,4 @@ async function createCategoryAndMenuFlat(input = {}, context = {}) {
     });
   }
 }
-module.exports = createCategoryAndMenuFlat;
+export default createCategoryAndMenuFlat;

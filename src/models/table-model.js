@@ -1,6 +1,6 @@
-const pool = require('../config/db');
+import pool from '../config/db.js';
 // Internal data access only. Services remain responsible for role/ownership checks.
-module.exports = function tableModel({ table, primaryKey, columns }) {
+export default function tableModel({ table, primaryKey, columns }) {
   return {
     table, primaryKey, columns: Object.freeze(columns),
     async findById(id, { restaurantId, connection = pool } = {}) {

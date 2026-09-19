@@ -1,6 +1,6 @@
-const AppError = require('../../utils/app-error');
-const pool = require('../../config/db');
-const bcrypt = require('bcrypt');
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
+import bcrypt from 'bcrypt';
 const VerifyOtpAndResetPassword = async (input = {}, context = {}) => {
   const {
     mob_no,
@@ -65,4 +65,4 @@ const VerifyOtpAndResetPassword = async (input = {}, context = {}) => {
     });
   }
 };
-module.exports = VerifyOtpAndResetPassword;
+export default VerifyOtpAndResetPassword;

@@ -1,5 +1,5 @@
-const pool = require('../config/db');
-module.exports = async (req, res, next) => {
+import pool from '../config/db.js';
+export default async (req, res, next) => {
   const assigned = ['restaurant_admin', 'kitchen'].includes(req.user?.role);
   const selected = req.headers['x-restaurant-id'] ?? req.query.restaurant_id ?? req.body?.restaurant_id;
   const id = Number(assigned ? req.user.restaurant_id : selected ?? 1);

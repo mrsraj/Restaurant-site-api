@@ -1,5 +1,5 @@
-const AppError = require('../../utils/app-error');
-const pool = require("../../config/db");
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
 const DeleteMenu = async (input = {}, context = {}) => {
   try {
     const {
@@ -25,4 +25,4 @@ const DeleteMenu = async (input = {}, context = {}) => {
     });
   }
 };
-module.exports = DeleteMenu;
+export default DeleteMenu;

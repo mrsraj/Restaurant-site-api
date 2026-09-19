@@ -1,7 +1,7 @@
-const AppError = require('../../utils/app-error');
-const crypto = require("crypto");
-const pool = require("../../config/db");
-const razorpay = require('../../config/razorpay');
+import AppError from '../../utils/app-error.js';
+import crypto from 'crypto';
+import pool from '../../config/db.js';
+import razorpay from '../../config/razorpay.js';
 const verifyPayment = async (input = {}, context = {}) => {
   const conn = await pool.getConnection();
   try {
@@ -66,4 +66,4 @@ const verifyPayment = async (input = {}, context = {}) => {
     conn.release();
   }
 };
-module.exports = verifyPayment;
+export default verifyPayment;

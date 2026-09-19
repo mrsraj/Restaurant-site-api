@@ -1,5 +1,5 @@
-const AppError = require('../../utils/app-error');
-const pool = require("../../config/db");
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
 async function GetCategory(input = {}, context = {}) {
   try {
     const [categories] = await pool.query('SELECT id, c_name FROM categories WHERE restaurant_id = ?', [context.restaurantId]);
@@ -12,4 +12,4 @@ async function GetCategory(input = {}, context = {}) {
     });
   }
 }
-module.exports = GetCategory;
+export default GetCategory;

@@ -1,6 +1,9 @@
-const cloudinary = require("cloudinary").v2;
-const fs = require("fs");
-require("dotenv").config();
+import cloudinaryPackage from 'cloudinary';
+import fs from 'fs';
+import 'dotenv/config';
+
+const cloudinary = cloudinaryPackage.v2;
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -23,4 +26,4 @@ const UploadOnCloudinary = async localFilePath => {
     return null;
   }
 };
-module.exports = UploadOnCloudinary;
+export default UploadOnCloudinary;

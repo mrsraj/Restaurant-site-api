@@ -1,7 +1,7 @@
-const AppError = require('../../utils/app-error');
-const pool = require('../../config/db');
-const uploadOnCloudinary = require("../../integrations/cloudinary");
-module.exports = async (input = {}, context = {}) => {
+import AppError from '../../utils/app-error.js';
+import pool from '../../config/db.js';
+import uploadOnCloudinary from '../../integrations/cloudinary.js';
+export default async (input = {}, context = {}) => {
   const id = context.params.id;
   const allowed = ['name', 'descriptions', 'price', 'discount', 'category_id', 'is_active'];
   const updates = Object.fromEntries(allowed.filter(key => input[key] !== undefined).map(key => [key, input[key]]));

@@ -1,4 +1,6 @@
-module.exports = require('./table-model')({
+import tableModel from './table-model.js';
+
+export default tableModel({
   "table": "table_reservation",
   "primaryKey": "id",
   "columns": [

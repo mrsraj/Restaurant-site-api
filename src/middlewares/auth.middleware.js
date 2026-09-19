@@ -1,8 +1,8 @@
-const {
+import {
   roleSql
-} = require('../config/roles');
-const jwt = require('jsonwebtoken');
-const pool = require('../config/db');
+} from '../config/roles.js';
+import jwt from 'jsonwebtoken';
+import pool from '../config/db.js';
 async function authenticate(req, res, next) {
   const match = /^Bearer (\S+)$/i.exec(req.headers.authorization || '');
   if (!match) return res.status(401).json({
@@ -34,4 +34,4 @@ async function authenticate(req, res, next) {
     next(error);
   }
 }
-module.exports = authenticate;
+export default authenticate;

@@ -1,5 +1,5 @@
-﻿const AppError = require('../../utils/app-error');
-const uploadOnCloudinary = require("../../integrations/cloudinary");
+import AppError from '../../utils/app-error.js';
+import uploadOnCloudinary from '../../integrations/cloudinary.js';
 const createUpload = async (input = {}, context = {}) => {
   try {
     const localFilePath = context.file?.path;
@@ -27,4 +27,4 @@ const createUpload = async (input = {}, context = {}) => {
     });
   }
 };
-module.exports = createUpload;
+export default createUpload;

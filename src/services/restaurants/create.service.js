@@ -1,11 +1,11 @@
-const AppError = require('../../utils/app-error');
-const {
+import AppError from '../../utils/app-error.js';
+import {
   roleSql,
   roleNames
-} = require("../../config/roles");
-const pool = require("../../config/db");
-const bcrypt = require('bcrypt');
-module.exports = async (input = {}, context = {}) => {
+} from '../../config/roles.js';
+import pool from '../../config/db.js';
+import bcrypt from 'bcrypt';
+export default async (input = {}, context = {}) => {
   if (typeof input.name !== 'string' || !input.name.trim() || input.name.length > 150) throw new AppError(400, {
     message: 'Restaurant name required (maximum 150 characters)'
   });

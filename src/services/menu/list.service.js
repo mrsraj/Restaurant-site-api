@@ -1,6 +1,6 @@
-const AppError = require('../../utils/app-error');
-const getMenu = require("../../models/menu.model");
-module.exports = async (input = {}, context = {}) => {
+import AppError from '../../utils/app-error.js';
+import getMenu from '../../models/menu.model.js';
+export default async (input = {}, context = {}) => {
   try {
     return {
       success: true,
